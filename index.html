@@ -250,7 +250,7 @@ if(!state.streak)state.streak=1;
 if(!state.lastLogin)state.lastLogin='';
 if(!state.lastSpin)state.lastSpin=0;
 if(!state.lang)state.lang='de';
-if(!state.style)state.style='realistic';
+if(!state.style)state.style='anime';
 var rubies=state.rubies;
 
 var LANGS={
@@ -401,10 +401,17 @@ function showScreen(s){
 }
 
 // *** CHARAKTER-BUTTON: schliesst Mini App und sendet Nachricht an Telegram ***
+var CHAR_IMG_URLS={
+  'Luna':'https://drt-deploy.vercel.app/images/luna.png',
+  'Mrs. Brooks':'https://drt-deploy.vercel.app/images/mrs-brooks.png',
+  'Nia':'https://drt-deploy.vercel.app/images/nia.png',
+  'Fatima':'https://drt-deploy.vercel.app/images/fatima.png'
+};
 function openChar(name,emoji,premium){
-  var payload=JSON.stringify({action:'open_character',character:name,userId:userId,username:username,rubies:rubies});
+  var imageUrl=CHAR_IMG_URLS[name]||'';
+  var payload=JSON.stringify({action:'open_character',character:name,userId:userId,username:username,rubies:rubies,imageUrl:imageUrl,style:state.style});
   if(tg&&tg.sendData){
-    tg.sendData(payload); // App schliesst sich, Bot empfaengt die Daten
+    tg.sendData(payload);
   } else {
     console.log('[n8n]',payload);
     showToast(emoji+' '+name+' → Telegram 💬');
