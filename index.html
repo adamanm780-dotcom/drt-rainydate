@@ -272,6 +272,9 @@ function loadBalanceFromServer(){
     .catch(function(){});
 }
 loadBalanceFromServer();
+// Refresh balance whenever user comes back to the mini app
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')loadBalanceFromServer();});
+if(tg)tg.onEvent('activated',function(){loadBalanceFromServer();});
 
 var LANGS={
 de:{companions:'Deine Begleiterinnen',createchar:'Erstelle deinen Charakter',invite:'Freunde einladen',realistic:'📸 Realistisch',anime:'✨ Anime',custtitle:'Eigenen Charakter erstellen',custsub:'⭐ Nur für Premium-Mitglieder',sharetitle:'🎁 +50 Rubine für jede Einladung!',sharesub:'Teile deinen Link und erhalte 50 Rubine wenn jemand beitritt.',sharebtn:'📤 t.me/Rainydate_bot teilen',premtitle:'RainyDate Premium',premsub:'Erlebe die volle Magie ohne Grenzen',b1:'Unbegrenzte Bildgenerierung',b2:'Priorisierte & ultraschnelle Antworten',b3:'Eigenen Charakter erstellen',b4:'Keine Limits – Charaktere tun alles',b5:'Exklusive Premium-Charaktere',chooseplan:'Plan wählen',h24:'24 Stunden',m1:'1 Monat',m6:'6 Monate',y1:'1 Jahr',popular:'⭐ Beliebt',buy:'Kaufen',save:'Spare',wheeltitle:'🎰 Glücksrad',wheelsub:'Drehe täglich für kostenlose Rubine!',spinbtn:'💎 Drehen!',nextspin:'Nächste Drehung in',yourrubies:'Deine Rubine',streakdays:'Tage hintereinander',dailyrewards:'Tägliche Belohnungen',todayreward:'Heutige Belohnung',comeback:'Komm morgen wieder!',langttl:'🌍 Sprache wählen',close:'Schließen',navchat:'Chat',navwheel:'Rad',navstreak:'Streak',navprem:'Premium',day:'Tag',rubyInfo:'Du hast {n} Rubine!',premMsg:'Premium {plan} für €{price} via PayPal\nPayPal: winkler-emil@gmx.net\nBetreff: {uid}',custMsg:'Eigenen Charakter erstellen ist eine Premium-Funktion!\nUpgrade auf Premium. 👑',
