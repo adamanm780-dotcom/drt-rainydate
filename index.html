@@ -377,10 +377,19 @@ function switchStyle(s){
   renderChars();
 }
 
+function syncBalanceToServer(){
+  if(!userId||userId.startsWith('u'))return;
+  fetch('https://adaman780.app.n8n.cloud/webhook/rainydate-stars',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action:'update_balance',userId:userId,balance:rubies})
+  }).catch(function(){});
+}
 function updateRuby(){
   var rc=document.getElementById('ruby-count'),wr=document.getElementById('wheel-rubies');
   if(rc)rc.textContent=rubies;if(wr)wr.textContent=rubies;
   state.rubies=rubies;saveState();
+  syncBalanceToServer();
 }
 function addRubies(n,reason){
   rubies+=n;updateRuby();
@@ -397,7 +406,7 @@ function addRubies(n,reason){
     if(state.streak>7)state.streak=1;
     var rews=[0,10,10,15,20,30,40,55];
     var bonus=rews[Math.min(state.streak,7)];
-    if(bonus>0){rubies+=bonus;state.rubies=rubies;setTimeout(function(){showToast('🔥 Tag '+state.streak+'! +'+bonus+' 💎');},1200);}
+    if(bonus>0){rubies+=bonus;state.rubies=rubies;setTimeout(function(){showToast('🔥 Tag '+state.streak+'! +'+bonus+' 💎');},1200);setTimeout(syncBalanceToServer,500);}
     state.lastLogin=today;saveState();
   }
 })();
