@@ -253,10 +253,13 @@ if(!state.lang)state.lang='de';
 if(!state.style)state.style='anime';
 var rubies=state.rubies;
 
-var N8N_BALANCE_WEBHOOK='https://adaman780.app.n8n.cloud/webhook/rainydate-balance';
 function loadBalanceFromServer(){
   if(!userId||userId.startsWith('u'))return;
-  fetch(N8N_BALANCE_WEBHOOK+'?userId='+encodeURIComponent(userId))
+  fetch('https://adaman780.app.n8n.cloud/webhook/rainydate-stars',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action:'get_balance',userId:userId})
+  })
     .then(function(r){return r.json();})
     .then(function(d){
       if(typeof d.balance==='number'){
