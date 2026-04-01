@@ -389,10 +389,9 @@ function updateRuby(){
   var rc=document.getElementById('ruby-count'),wr=document.getElementById('wheel-rubies');
   if(rc)rc.textContent=rubies;if(wr)wr.textContent=rubies;
   state.rubies=rubies;saveState();
-  syncBalanceToServer();
 }
 function addRubies(n,reason){
-  rubies+=n;updateRuby();
+  rubies+=n;updateRuby();syncBalanceToServer();
   var el=document.getElementById('ruby-count');
   if(el){el.classList.remove('rpop');void el.offsetWidth;el.classList.add('rpop');}
   showToast('+'+n+' 💎 '+(reason||''));
