@@ -341,9 +341,15 @@ var CHAR_IMGS=window.CHAR_IMGS={
 
 function renderChars(){
   var g=document.getElementById('chars-grid');if(!g)return;
-  var _c={realistic:[{name:'Luna',emoji:'🌙',premium:false},{name:'Mrs. Brooks',emoji:'👩‍🏫',premium:false},{name:'Nia',emoji:'🌺',premium:false},{name:'Fatima',emoji:'🌹',premium:true}],anime:[{name:'Luna',emoji:'🌸',premium:false},{name:'Mrs. Brooks',emoji:'⚡',premium:false},{name:'Nia',emoji:'🍀',premium:false},{name:'Fatima',emoji:'🌟',premium:true}]};
+  var _c={
+    realistic:[{name:'Luna',emoji:'\uD83C\uDF19',premium:false},{name:'Mrs. Brooks',emoji:'\uD83D\uDC69\u200D\uD83C\uDFEB',premium:false},{name:'Nia',emoji:'\uD83C\uDF3A',premium:false},{name:'Fatima',emoji:'\uD83C\uDF39',premium:true}],
+    anime:[{name:'Luna',emoji:'\uD83C\uDF38',premium:false},{name:'Mrs. Brooks',emoji:'\u26A1',premium:false},{name:'Nia',emoji:'\uD83C\uDF40',premium:false},{name:'Fatima',emoji:'\uD83C\uDF1F',premium:true}]
+  };
   var _g=['135deg,#c96b8a44,#c96b8a0a','135deg,#7b4f8e44,#7b4f8e0a','135deg,#4a8a8e44,#4a8a8e0a','135deg,#8e6a4a44,#8e6a4a0a'];
-  var _i={realistic:{Luna:'img/realistic_Luna.png','Mrs. Brooks':'img/realistic_Mrs._Brooks.png',Nia:'img/realistic_Nia.png',Fatima:'img/realistic_Fatima.png'},anime:{Luna:'img/anime_Luna.png','Mrs. Brooks':'img/anime_Mrs._Brooks.png',Nia:'img/anime_Nia.png',Fatima:'img/anime_Fatima.jpg'}};
+  var _i={
+    realistic:{Luna:'img/realistic_Luna.png','Mrs. Brooks':'img/realistic_Mrs._Brooks.png',Nia:'img/realistic_Nia.png',Fatima:'img/realistic_Fatima.png'},
+    anime:{Luna:'img/anime_Luna.png','Mrs. Brooks':'img/anime_Mrs._Brooks.png',Nia:'img/anime_Nia.png',Fatima:'img/anime_Fatima.jpg'}
+  };
   var sty=state.style||'anime';
   var list=_c[sty]||_c['anime'];
   var L=LANGS[state.lang]||LANGS.de;
@@ -353,22 +359,24 @@ function renderChars(){
     var c=list[i];
     var tag=(tagMap&&tagMap[c.name])?tagMap[c.name]:c.name;
     var safe=c.name.replace(/'/g,"\'");
-    var imgSrc=(_i[sty]&&_i[sty][c.name])||'';
+    var src=(_i[sty]&&_i[sty][c.name])||'';
     var isR=(sty==='realistic');
-    var imgSt=isR?'width:100%;height:100%;object-fit:cover;object-position:top;filter:blur(6px);transform:scale(1.08);':'width:100%;height:100%;object-fit:cover;object-position:top;';
-    var imgEl=imgSrc
-      ?('<img src="'+imgSrc+'" style="'+imgSt+'" alt="'+c.name+'" onerror="this.style.display='none'">')
-      :('<div class="char-ph" style="background:linear-gradient('+_g[i]+');'+(isR?'filter:blur(6px);':'')+'"><span style="font-size:42px">'+c.emoji+'</span></div>');
+    var ist=isR?'width:100%;height:100%;object-fit:cover;object-position:top;filter:blur(6px);transform:scale(1.08);':'width:100%;height:100%;object-fit:cover;object-position:top;';
+    var imgEl=src
+      ?('<img src="'+src+'" style="'+ist+'" alt="'+c.name+'">')
+      :('<div class="char-ph" style="background:linear-gradient('+_g[i]+');'+(isR?'filter:blur(6px);':'')+'" ><span style="font-size:42px">'+c.emoji+'</span></div>');
     var ov=isR
-      ?'<div style="position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:rgba(13,10,20,0.45);"><span style="font-size:22px;">🔒</span><span style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:#fff;letter-spacing:2px;text-transform:uppercase;">Coming Soon</span></div>'
+      ?'<div style="position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:rgba(13,10,20,0.45);"><span style="font-size:22px">\uD83D\uDD12</span><span style="font-size:13px;font-weight:700;color:#fff;letter-spacing:2px;text-transform:uppercase;">Coming Soon</span></div>'
       :'';
-    html+='<div class="char-card" '+(isR?'onclick=""':'onclick="openChar(''+safe+'',''+c.emoji+'','+c.premium+')"')+'>'
-      +imgEl+ov+(isR?'':'<div class="char-online"></div>')
-      +(c.premium&&!isR?'<div class="char-prem">👑</div>':'')
+    var cls=isR?'onclick=""':'onclick="openChar(\''+safe+'\',\''+c.emoji+'\','+c.premium+')"';
+    html+='<div class="char-card" '+cls+'>'+imgEl+ov
+      +(isR?'':'<div class="char-online"></div>')
+      +(c.premium&&!isR?'<div class="char-prem">\uD83D\uDC51</div>':'')
       +'<div class="char-info"><div class="char-name">'+c.name+'</div><div class="char-tag">'+tag+'</div></div></div>';
   }
   g.innerHTML=html;
 }
+
 function switchStyle(s){
   state.style=s;saveState();
   document.getElementById('btn-realistic').className='sty-btn'+(s==='realistic'?' active':'');
