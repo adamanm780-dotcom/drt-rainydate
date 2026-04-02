@@ -562,7 +562,7 @@ function spinWheel(){
   spinning=true;document.getElementById('spin-btn').disabled=true;
   var land=Math.floor(Math.random()*W_SLICES.length);
   var sa=360/W_SLICES.length,extra=5+Math.floor(Math.random()*5);
-  var target=extra*360+(360-(land*sa+sa/2));
+  var target=extra*360+(270-(land*sa+sa/2));
   var cv=document.getElementById('spin-canvas'),start=null,dur=4000;
   function step(ts){
     if(!start)start=ts;
