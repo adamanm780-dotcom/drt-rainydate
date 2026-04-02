@@ -350,14 +350,19 @@ function renderChars(){
     realistic:{Luna:'img/realistic_Luna.png','Mrs. Brooks':'img/realistic_Mrs._Brooks.png',Nia:'img/realistic_Nia.png',Fatima:'img/realistic_Fatima.png'},
     anime:{Luna:'img/anime_Luna.png','Mrs. Brooks':'img/anime_Mrs._Brooks.png',Nia:'img/anime_Nia.png',Fatima:'img/anime_Fatima.jpg'}
   };
-  var sty=state.style||'anime';
+  var _tags={
+    anime:{Luna:'Kawaii & verspielt','Mrs. Brooks':'Cool & Tsundere',Nia:'Genki & \xFCrsorglich',Fatima:'Kuudere & r\xE4tselhaft'},
+    realistic:{Luna:'Mystisch & verspielt','Mrs. Brooks':'Elegant & dominant',Nia:'Warm & sinnlich',Fatima:'Geheimnisvoll & leidenschaftlich'}
+  };
+  var sty=(state&&state.style)||'anime';
   var list=_c[sty]||_c['anime'];
-  var L=LANGS[state.lang]||LANGS.de;
-  var tagMap=(sty==='anime')?L.antags:L.tags;
+  var tagMap=_tags[sty]||_tags['anime'];
+  var L=(typeof LANGS!=='undefined'&&LANGS)?(LANGS[(state&&state.lang)||'de']||LANGS.de):null;
+  if(L&&(sty==='anime'?L.antags:L.tags))tagMap=(sty==='anime')?L.antags:L.tags;
   var html='';
   for(var i=0;i<list.length;i++){
     var c=list[i];
-    var tag=(tagMap&&tagMap[c.name])?tagMap[c.name]:c.name;
+    var tag=(tagMap&&tagMap[c.name])||c.name;
     var safe=c.name.replace(/'/g,"\'");
     var src=(_i[sty]&&_i[sty][c.name])||'';
     var isR=(sty==='realistic');
@@ -366,13 +371,14 @@ function renderChars(){
       ?('<img src="'+src+'" style="'+ist+'" alt="'+c.name+'">')
       :('<div class="char-ph" style="background:linear-gradient('+_g[i]+');'+(isR?'filter:blur(6px);':'')+'" ><span style="font-size:42px">'+c.emoji+'</span></div>');
     var ov=isR
-      ?'<div style="position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:rgba(13,10,20,0.45);"><span style="font-size:22px">\uD83D\uDD12</span><span style="font-size:13px;font-weight:700;color:#fff;letter-spacing:2px;text-transform:uppercase;">Coming Soon</span></div>'
+      ?'<div style="position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;background:rgba(13,10,20,0.45);"><span style="font-size:13px;font-weight:700;color:#fff;letter-spacing:2px;text-transform:uppercase;">Coming Soon</span></div>'
       :'';
     var cls=isR?'onclick=""':'onclick="openChar(\''+safe+'\',\''+c.emoji+'\','+c.premium+')"';
     html+='<div class="char-card" '+cls+'>'+imgEl+ov
       +(isR?'':'<div class="char-online"></div>')
       +(c.premium&&!isR?'<div class="char-prem">\uD83D\uDC51</div>':'')
-      +'<div class="char-info"><div class="char-name">'+c.name+'</div><div class="char-tag">'+tag+'</div></div></div>';
+      +'<div class="char-info"><div class="char-name">'+c.name+'</div>'
+      +'<div class="char-tag">'+tag+'</div></div></div>';
   }
   g.innerHTML=html;
 }
