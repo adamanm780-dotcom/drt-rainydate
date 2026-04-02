@@ -329,12 +329,12 @@ function applyLang(){
   renderChars();renderStreak();
 }
 
-window.CHARS={
+var CHARS=window.CHARS={
   realistic:[{name:'Luna',emoji:'🌙',premium:false},{name:'Mrs. Brooks',emoji:'👩‍🏫',premium:false},{name:'Nia',emoji:'🌺',premium:false},{name:'Fatima',emoji:'🌹',premium:true}],
   anime:[{name:'Luna',emoji:'🌸',premium:false},{name:'Mrs. Brooks',emoji:'⚡',premium:false},{name:'Nia',emoji:'🍀',premium:false},{name:'Fatima',emoji:'🌟',premium:true}]
 };
-window.GRADS=['135deg,#c96b8a44,#c96b8a0a','135deg,#7b4f8e44,#7b4f8e0a','135deg,#4a8a8e44,#4a8a8e0a','135deg,#8e6a4a44,#8e6a4a0a'];
-window.CHAR_IMGS={
+var GRADS=window.GRADS=['135deg,#c96b8a44,#c96b8a0a','135deg,#7b4f8e44,#7b4f8e0a','135deg,#4a8a8e44,#4a8a8e0a','135deg,#8e6a4a44,#8e6a4a0a'];
+var CHAR_IMGS=window.CHAR_IMGS={
   realistic:{'Luna':'img/realistic_Luna.png','Mrs. Brooks':'img/realistic_Mrs._Brooks.png','Nia':'img/realistic_Nia.png','Fatima':'img/realistic_Fatima.png'},
   anime:{'Luna':'img/anime_Luna.png','Mrs. Brooks':'img/anime_Mrs._Brooks.png','Nia':'img/anime_Nia.png','Fatima':'img/anime_Fatima.jpg'}
 };
@@ -342,7 +342,7 @@ window.CHAR_IMGS={
 function renderChars(){
   var g=document.getElementById('chars-grid');if(!g)return;
   try{
-  var list=(window.CHARS||CHARS)[state.style]||(window.CHARS||CHARS)['anime'];
+  var list=CHARS[state.style]||CHARS['anime'];
   var L=LANGS[state.lang]||LANGS.de;
   var tagMap=(state.style==='anime')?L.antags:L.tags;
   var html='';
@@ -350,7 +350,7 @@ function renderChars(){
     var c=list[i];
     var tag=(tagMap&&tagMap[c.name])?tagMap[c.name]:c.name;
     var safe=c.name.replace(/'/g,"\'");
-    var charImgs=window.CHAR_IMGS||CHAR_IMGS||{};var imgSrc=(charImgs[state.style]&&charImgs[state.style][c.name])||'';
+    var imgSrc=(CHAR_IMGS[state.style]&&CHAR_IMGS[state.style][c.name])||'';
     var isRealistic=(state.style==='realistic');
     var imgStyle=isRealistic?'width:100%;height:100%;object-fit:cover;object-position:top;filter:blur(6px);transform:scale(1.08);':'width:100%;height:100%;object-fit:cover;object-position:top;';
     var imgEl=imgSrc
