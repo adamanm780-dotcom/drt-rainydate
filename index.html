@@ -341,7 +341,8 @@ var CHAR_IMGS={
 
 function renderChars(){
   var g=document.getElementById('chars-grid');if(!g)return;
-  var list=CHARS[state.style];
+  try{
+  var list=CHARS[state.style]||CHARS['anime'];
   var L=LANGS[state.lang]||LANGS.de;
   var tagMap=(state.style==='anime')?L.antags:L.tags;
   var html='';
@@ -353,11 +354,11 @@ function renderChars(){
     var isRealistic=(state.style==='realistic');
     var imgStyle=isRealistic?'width:100%;height:100%;object-fit:cover;object-position:top;filter:blur(6px);transform:scale(1.08);':'width:100%;height:100%;object-fit:cover;object-position:top;';
     var imgEl=imgSrc
-      ?('<img src="'+imgSrc+'" style="'+imgStyle+'" alt="'+c.name+'">')
+      ?('<img src="'+imgSrc+'" style="'+imgStyle+'" alt="'+c.name+'" onerror="this.style.display=\'none\'">')
       :('<div class="char-ph" style="background:linear-gradient('+GRADS[i]+');'+(isRealistic?'filter:blur(6px);':'')+'"><span style="font-size:42px">'+c.emoji+'</span></div>');
     var comingSoonOverlay=isRealistic
       ?'<div style="position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:rgba(13,10,20,0.45);">'
-        +'<span style="font-size:22px;">🔒</span>'
+        +'<span style="font-size:22px;">\uD83D\uDD12</span>'
         +'<span style="font-family:\'Playfair Display\',serif;font-size:13px;font-weight:700;color:#fff;letter-spacing:2px;text-transform:uppercase;text-shadow:0 2px 8px rgba(0,0,0,0.9);">Coming Soon</span>'
         +'</div>'
       :'';
@@ -365,11 +366,12 @@ function renderChars(){
       +imgEl
       +comingSoonOverlay
       +(isRealistic?'':'<div class="char-online"></div>')
-      +(c.premium&&!isRealistic?'<div class="char-prem">👑</div>':'')
+      +(c.premium&&!isRealistic?'<div class="char-prem">\uD83D\uDC51</div>':'')
       +'<div class="char-info"><div class="char-name">'+c.name+'</div><div class="char-tag">'+tag+'</div></div>'
       +'</div>';
   }
   g.innerHTML=html;
+  }catch(e){g.innerHTML='<div style="color:#ff8fa0;padding:16px;font-size:12px;grid-column:1/-1">style:'+state.style+' err:'+e.message+'</div>';}
 }
 
 function switchStyle(s){
