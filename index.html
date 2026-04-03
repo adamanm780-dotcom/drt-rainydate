@@ -404,10 +404,19 @@ function updateRuby(){
   state.rubies=rubies;saveState();
 }
 function addRubies(n,reason){
-  rubies+=n;updateRuby();syncBalanceToServer();
+  rubies+=n;updateRuby();
   var el=document.getElementById('ruby-count');
   if(el){el.classList.remove('rpop');void el.offsetWidth;el.classList.add('rpop');}
   showToast('+'+n+' 💎 '+(reason||''));
+  if(userId&&!userId.startsWith('u')){
+    fetch('https://adaman780.app.n8n.cloud/webhook/rainydate-stars',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'credit_rubins',userId:userId,amount:n,reason:reason||'reward'})
+    }).then(function(r){return r.json();}).then(function(d){
+      if(typeof d.balance==='number'){rubies=d.balance;state.rubies=rubies;updateRuby();saveState();}
+    }).catch(function(){});
+  }
 }
 
 // Daily login streak
