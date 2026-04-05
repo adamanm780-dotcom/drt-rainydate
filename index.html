@@ -255,7 +255,7 @@ var rubies=state.rubies;
 
 function loadBalanceFromServer(){
   if(!userId||userId.startsWith('u'))return;
-  fetch('https://adaman780.app.n8n.cloud/webhook/rainydate-stars',{
+  fetch('/api/proxy',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({action:'get_balance',userId:userId})
@@ -392,7 +392,7 @@ function switchStyle(s){
 
 function syncBalanceToServer(){
   if(!userId||userId.startsWith('u'))return;
-  fetch('https://adaman780.app.n8n.cloud/webhook/rainydate-stars',{
+  fetch('/api/proxy',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({action:'update_balance',userId:userId,balance:rubies})
@@ -409,7 +409,7 @@ function addRubies(n,reason){
   if(el){el.classList.remove('rpop');void el.offsetWidth;el.classList.add('rpop');}
   showToast('+'+n+' 💎 '+(reason||''));
   if(userId&&!userId.startsWith('u')){
-    fetch('https://adaman780.app.n8n.cloud/webhook/rainydate-stars',{
+    fetch('/api/proxy',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'credit_rubins',userId:userId,amount:n,reason:reason||'reward'})
