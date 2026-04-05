@@ -490,6 +490,15 @@ function buyPlan(planKey,price){
 
 var N8N_STARS_WEBHOOK = 'https://adaman780.app.n8n.cloud/webhook/rainydate-stars';
 
+// Fallback wenn tg.openInvoice nicht verfügbar oder wirft
+function openInvoiceFallback(invoiceUrl){
+  if(tg&&tg.openLink){
+    tg.openLink(invoiceUrl);
+  } else {
+    window.open(invoiceUrl,'_blank');
+  }
+}
+
 // Fire-and-forget helper for post-payment events
 function sendN8N(payload){
   if(!userId||userId.startsWith('u'))return;
@@ -542,15 +551,16 @@ function buyStars(planKey,stars){
             } else if(status==='cancelled'){
               showToast('Zahlung abgebrochen.');
             } else if(status==='failed'){
-              showToast('Zahlung fehlgeschlagen. Bitte erneut versuchen.');
+              // Fallback: direkt öffnen wenn interner Invoice-Dialog versagt
+              openInvoiceFallback(data.invoiceUrl);
             }
           });
         } catch(e){
           console.error('openInvoice error:',e);
-          showToast('Fehler beim Öffnen der Zahlung. Bitte Telegram aktualisieren.');
+          openInvoiceFallback(data.invoiceUrl);
         }
       } else {
-        showToast('Bitte in Telegram öffnen.');
+        openInvoiceFallback(data.invoiceUrl);
       }
     } else {
       showToast('Fehler: '+(data&&data.error?data.error:'Unbekannter Fehler'));
