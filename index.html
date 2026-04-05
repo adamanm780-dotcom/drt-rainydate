@@ -488,7 +488,7 @@ function buyPlan(planKey,price){
   if(tg){tg.showAlert(msg);}else{alert(msg);}
 }
 
-var N8N_STARS_WEBHOOK = 'https://adaman780.app.n8n.cloud/webhook/rainydate-stars';
+var N8N_STARS_WEBHOOK = '/api/proxy';
 
 // Fallback wenn tg.openInvoice nicht verfügbar oder wirft
 function openInvoiceFallback(invoiceUrl){
