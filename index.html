@@ -488,53 +488,82 @@ function buyPlan(planKey,price){
   if(tg){tg.showAlert(msg);}else{alert(msg);}
 }
 
-// !! DEINE n8n WEBHOOK URL HIER EINTRAGEN !!
 var N8N_STARS_WEBHOOK = 'https://adaman780.app.n8n.cloud/webhook/rainydate-stars';
+
+// Fire-and-forget helper for post-payment events
+function sendN8N(payload){
+  if(!userId||userId.startsWith('u'))return;
+  fetch(N8N_STARS_WEBHOOK,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  }).catch(function(){});
+}
 
 function buyStars(planKey,stars){
   var plans={h24:'24 Stunden',m1:'1 Monat',m6:'6 Monate',y1:'1 Jahr'};
   var planName=plans[planKey]||planKey;
 
-  // Zeige Lade-Indikator
   showToast('Zahlung wird vorbereitet...');
 
-  fetch(N8N_STARS_WEBHOOK, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      action: 'create_invoice',
-      plan: planKey,
-      planName: planName,
-      stars: stars,
-      userId: userId,
-      username: username
-    })
+  // Timeout-Controller: nach 15s abbrechen
+  var ctrl=typeof AbortController!=='undefined'?new AbortController():null;
+  var timer=ctrl?setTimeout(function(){ctrl.abort();},15000):null;
+
+  fetch(N8N_STARS_WEBHOOK,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      action:'create_invoice',
+      plan:planKey,
+      planName:planName,
+      stars:stars,
+      userId:userId,
+      username:username
+    }),
+    signal:ctrl?ctrl.signal:undefined
   })
-  .then(function(r){ return r.json(); })
+  .then(function(r){
+    if(timer)clearTimeout(timer);
+    // r.text() statt r.json() um HTML-Fehlermeldungen von n8n abzufangen
+    return r.text().then(function(txt){
+      try{return JSON.parse(txt);}
+      catch(e){throw new Error('Ungültige Antwort vom Server ('+r.status+')');}
+    });
+  })
   .then(function(data){
-    if(data && data.invoiceUrl){
-      // Oeffnet den Stern-Zahlungsdialog direkt in der App
-      if(tg && tg.openInvoice){
-        tg.openInvoice(data.invoiceUrl, function(status){
-          if(status === 'paid'){
-            showToast('Zahlung erfolgreich! Premium aktiviert.');
-            sendN8N({action:'stars_paid',plan:planKey,stars:stars,userId:userId,username:username});
-          } else if(status === 'cancelled'){
-            showToast('Zahlung abgebrochen.');
-          } else if(status === 'failed'){
-            showToast('Zahlung fehlgeschlagen. Bitte erneut versuchen.');
-          }
-        });
+    if(data&&data.invoiceUrl){
+      if(tg&&tg.openInvoice){
+        try{
+          tg.openInvoice(data.invoiceUrl,function(status){
+            if(status==='paid'){
+              showToast('✅ Zahlung erfolgreich! Premium aktiviert.');
+              sendN8N({action:'stars_paid',plan:planKey,stars:stars,userId:userId,username:username});
+            } else if(status==='cancelled'){
+              showToast('Zahlung abgebrochen.');
+            } else if(status==='failed'){
+              showToast('Zahlung fehlgeschlagen. Bitte erneut versuchen.');
+            }
+          });
+        } catch(e){
+          console.error('openInvoice error:',e);
+          showToast('Fehler beim Öffnen der Zahlung. Bitte Telegram aktualisieren.');
+        }
       } else {
-        showToast('Bitte in Telegram oeffnen.');
+        showToast('Bitte in Telegram öffnen.');
       }
     } else {
-      showToast('Fehler: ' + (data && data.error ? data.error : 'Unbekannter Fehler'));
+      showToast('Fehler: '+(data&&data.error?data.error:'Unbekannter Fehler'));
     }
   })
   .catch(function(err){
-    console.error('Stars error:', err);
-    showToast('Verbindungsfehler. Bitte erneut versuchen.');
+    if(timer)clearTimeout(timer);
+    console.error('Stars error:',err);
+    if(err&&err.name==='AbortError'){
+      showToast('Zeitüberschreitung. Bitte erneut versuchen.');
+    } else {
+      showToast('Verbindungsfehler: '+(err&&err.message?err.message:'Bitte erneut versuchen.'));
+    }
   });
 }
 
