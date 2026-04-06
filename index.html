@@ -245,7 +245,7 @@ var rubies=state.rubies;
 
 function loadBalanceFromServer(){
   if(!userId||userId.startsWith('u'))return;
-  fetch('https://rainydaterepo.vercel.app/api/proxy',{
+  fetch('https://rainydaterepo.vercel.app/api/stars',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({action:'get_balance',userId:userId})
@@ -382,7 +382,7 @@ function switchStyle(s){
 
 function syncBalanceToServer(){
   if(!userId||userId.startsWith('u'))return;
-  fetch('https://rainydaterepo.vercel.app/api/proxy',{
+  fetch('https://rainydaterepo.vercel.app/api/stars',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({action:'update_balance',userId:userId,balance:rubies})
@@ -399,7 +399,7 @@ function addRubies(n,reason){
   if(el){el.classList.remove('rpop');void el.offsetWidth;el.classList.add('rpop');}
   showToast('+'+n+' 💎 '+(reason||''));
   if(userId&&!userId.startsWith('u')){
-    fetch('https://rainydaterepo.vercel.app/api/proxy',{
+    fetch('https://rainydaterepo.vercel.app/api/stars',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'credit_rubins',userId:userId,amount:n,reason:reason||'reward'})
@@ -478,7 +478,7 @@ function buyPlan(planKey,price){
   if(tg){tg.showAlert(msg);}else{alert(msg);}
 }
 
-var N8N_STARS_WEBHOOK = 'https://rainydaterepo.vercel.app/api/proxy';
+var N8N_STARS_WEBHOOK = 'https://rainydaterepo.vercel.app/api/stars';
 
 // Fallback wenn tg.openInvoice nicht verfügbar oder wirft
 function openInvoiceFallback(invoiceUrl){

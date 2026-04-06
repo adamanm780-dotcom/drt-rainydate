@@ -1,9 +1,7 @@
 {
   "functions": {
-    "api/proxy.js": {
-      "memory": 128,
-      "maxDuration": 20
-    }
+    "api/proxy.js": { "maxDuration": 20 },
+    "api/stars.js": { "maxDuration": 20 }
   },
   "headers": [
     {
