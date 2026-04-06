@@ -532,6 +532,7 @@ function buyStars(planKey,stars){
   })
   .then(function(data){
     if(data&&data.invoiceUrl){
+      showToast('✅ Invoice erhalten – öffne Zahlung...');
       if(tg&&tg.openInvoice){
         try{
           tg.openInvoice(data.invoiceUrl,function(status){
@@ -540,16 +541,17 @@ function buyStars(planKey,stars){
               sendN8N({action:'stars_paid',plan:planKey,stars:stars,userId:userId,username:username});
             } else if(status==='cancelled'){
               showToast('Zahlung abgebrochen.');
-            } else if(status==='failed'){
-              // Fallback: direkt öffnen wenn interner Invoice-Dialog versagt
+            } else {
+              showToast('Status: '+status+' – versuche direkten Link...');
               openInvoiceFallback(data.invoiceUrl);
             }
           });
         } catch(e){
-          console.error('openInvoice error:',e);
+          showToast('openInvoice Fehler: '+e.message);
           openInvoiceFallback(data.invoiceUrl);
         }
       } else {
+        showToast('Kein openInvoice – öffne Link...');
         openInvoiceFallback(data.invoiceUrl);
       }
     } else {
