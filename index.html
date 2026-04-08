@@ -247,7 +247,7 @@ function loadBalanceFromServer(){
   if(!userId||userId.startsWith('u'))return;
   fetch('https://rainydaterepo.vercel.app/api/stars',{
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{'Content-Type':'text/plain'},
     body:JSON.stringify({action:'get_balance',userId:userId})
   })
     .then(function(r){return r.json();})
@@ -384,7 +384,7 @@ function syncBalanceToServer(){
   if(!userId||userId.startsWith('u'))return;
   fetch('https://rainydaterepo.vercel.app/api/stars',{
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{'Content-Type':'text/plain'},
     body:JSON.stringify({action:'update_balance',userId:userId,balance:rubies})
   }).catch(function(){});
 }
@@ -401,7 +401,7 @@ function addRubies(n,reason){
   if(userId&&!userId.startsWith('u')){
     fetch('https://rainydaterepo.vercel.app/api/stars',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'text/plain'},
       body:JSON.stringify({action:'credit_rubins',userId:userId,amount:n,reason:reason||'reward'})
     }).then(function(r){return r.json();}).then(function(d){
       if(typeof d.balance==='number'){rubies=d.balance;state.rubies=rubies;updateRuby();saveState();}
@@ -494,7 +494,7 @@ function sendN8N(payload){
   if(!userId||userId.startsWith('u'))return;
   fetch(N8N_STARS_WEBHOOK,{
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{'Content-Type':'text/plain'},
     body:JSON.stringify(payload)
   }).catch(function(){});
 }
@@ -511,7 +511,7 @@ function buyStars(planKey,stars){
 
   fetch(N8N_STARS_WEBHOOK,{
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{'Content-Type':'text/plain'},
     body:JSON.stringify({
       action:'create_invoice',
       plan:planKey,
